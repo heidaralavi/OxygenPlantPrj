@@ -39,10 +39,23 @@ sns.heatmap(corr, cbar=False,square= True, fmt='.1f', annot=True, annot_kws={'si
 #plt.savefig('../fig/pic.jpg')
 plt.show()
 
-#print(df["[0:20]"])
-#plt.title('Oxygen Plant', fontsize=20,fontweight='bold')
-#plt.xlim(datetime.datetime(2024,1,25,15,15,00),datetime.datetime(2024,1,25,20,0,0))
-#plt.plot(df["tarikh"],df["[0:367]"])
+plt.figure(figsize=(15,11),dpi=300)
+plt.title('Moisture', fontsize=20,fontweight='bold')
+sns.kdeplot(data=normal_data, x=normal_data.iloc[:,2] , y=normal_data.iloc[:,2],fill=True, levels=10,)
+plt.show()
 
-#print (df.info())
+
+plt.figure(figsize=(15,11),dpi=300)
+plt.title('Moisture', fontsize=20,fontweight='bold')
+sns.displot(
+    data=normal_data,
+    x=normal_data.iloc[:,2],
+    hue=normal_data.iloc[:,5],
+    #hue_order=['Very Good','Good','Bad'],
+    kind="kde", height=6,
+    fill=True,
+    alpha = 0.05,
+)
+plt.show()
+
 #df.to_excel("../fig/output.xlsx",index=False)
