@@ -13,6 +13,7 @@ def date_time_add(x):
 
 def normalization(dataframe):
     normalized_df=(dataframe-dataframe.min())/(dataframe.max()-dataframe.min())
+    #normalized_df.to_excel("../fig/Normalized.xlsx",index=False)
     return normalized_df
 
 #//data base preparation
