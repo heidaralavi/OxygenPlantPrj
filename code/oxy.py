@@ -16,6 +16,24 @@ def normalization(dataframe):
     #normalized_df.to_excel("../fig/Normalized.xlsx",index=False)
     return normalized_df
 
+def set_oxygen_produce_levels(x):
+    if x < 29500 :
+        return None
+    if x <= 29600 :
+        return "Level1"
+    if x <= 29700 :
+        return "Level2"
+    if x <= 29800 :
+        return "Level3"
+    if x <= 29900 :
+        return "Level4"
+    if x <= 30000 :
+        return "Level5"
+    if x > 30000 :
+        return None
+
+
+
 #//data base preparation
 df = pd.read_csv("../data/oxygen-plant.csv")
 
@@ -29,23 +47,33 @@ df["tarikh"] = df["Minuts_From_Start"].apply(date_time_add)
 print(df.tail())
 
 
-
 normal_data = normalization(df.drop("tarikh" ,axis= 1))
 #print(normal_data.head())
+
+df["levels"] = df["FI580 Vessel V5000B pressure"].apply(set_oxygen_produce_levels)
+print(df.tail())
+
+
 
 corr = normal_data.corr()
 plt.figure(figsize=(15,11),dpi=300)
 plt.title('Correlation Coefficient', fontsize=20,fontweight='bold')
 sns.heatmap(corr, cbar=False,square= True, fmt='.1f', annot=True, annot_kws={'size':6}, cmap='Greens')
 #plt.savefig('../fig/pic.jpg')
-plt.show()
+#plt.show()
 
 plt.figure(figsize=(15,11),dpi=300)
 plt.title('Moisture', fontsize=20,fontweight='bold')
-sns.kdeplot(data=normal_data, x=normal_data.iloc[:,2] , y=normal_data.iloc[:,2],fill=True, levels=10,)
+sns.histplot(data=df.iloc[:,3],binwidth=100 )
 plt.show()
 
 
+plt.figure(figsize=(15,11),dpi=300)
+plt.title('Moisture', fontsize=20,fontweight='bold')
+sns.kdeplot(data=df,  x=df.iloc[:,4],fill=True,hue=df['levels'],hue_order =['Level1','Level2','Level3','Level4','Level5'])
+plt.show()
+
+'''
 plt.figure(figsize=(15,11),dpi=300)
 plt.title('Moisture', fontsize=20,fontweight='bold')
 sns.displot(
@@ -57,6 +85,7 @@ sns.displot(
     fill=True,
     alpha = 0.05,
 )
-plt.show()
+#plt.show()
 
 #df.to_excel("../fig/output.xlsx",index=False)
+'''
