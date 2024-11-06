@@ -44,48 +44,63 @@ df.columns = df.columns.to_series().map(colums_dict['Des'])
 
 #// add tarikh column
 df["tarikh"] = df["Minuts_From_Start"].apply(date_time_add)
-print(df.tail())
+#print(df.tail())
 
 
 normal_data = normalization(df.drop("tarikh" ,axis= 1))
 #print(normal_data.head())
 
 df["levels"] = df["FI580 Vessel V5000B pressure"].apply(set_oxygen_produce_levels)
-print(df.tail())
+#print(df.tail())
 
 
-
+#// calculating Correlation Coefficient
 corr = normal_data.corr()
-plt.figure(figsize=(15,11),dpi=300)
-plt.title('Correlation Coefficient', fontsize=20,fontweight='bold')
-sns.heatmap(corr, cbar=False,square= True, fmt='.1f', annot=True, annot_kws={'size':6}, cmap='Greens')
-#plt.savefig('../fig/pic.jpg')
-#plt.show()
-
-plt.figure(figsize=(15,11),dpi=300)
-plt.title('Moisture', fontsize=20,fontweight='bold')
-sns.histplot(data=df.iloc[:,3],binwidth=100 )
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Correlation Coefficient', fontsize=16,fontweight='bold')
+ax1 = fig.subplots(1,1)
+sns.heatmap(corr, cbar=False,square= True, fmt='.1f', annot=True, annot_kws={'size':3}, cmap='Greens',ax= ax1)
+fig.tight_layout()
+#plt.savefig('../fig/Correlation_Coefficient.jpg')
 plt.show()
 
-
-plt.figure(figsize=(15,11),dpi=300)
-plt.title('Moisture', fontsize=20,fontweight='bold')
-sns.kdeplot(data=df,  x=df.iloc[:,4],fill=True,hue=df['levels'],hue_order =['Level1','Level2','Level3','Level4','Level5'])
+#// Histogram of O2 production
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('O2 Production', fontsize=16,fontweight='bold')
+ax1 = fig.subplots(1,1)
+sns.histplot(data=df["FI580 Vessel V5000B pressure"], binwidth=100 ,ax= ax1)
+fig.tight_layout()
+#plt.savefig('../fig/Production_Hist.jpg')
 plt.show()
 
-'''
-plt.figure(figsize=(15,11),dpi=300)
-plt.title('Moisture', fontsize=20,fontweight='bold')
+#// Compressors C5000 Motor Current
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Compressors C5000 Motor Current', fontsize=16,fontweight='bold')
+(ax1,ax2,ax3) = fig.subplots(1,3,sharex=True,sharey=True)
+ax1.scatter(x=df['Minuts_From_Start'], y= df['CT001 Motor current (C5000A)'], color='blue', label='y1',alpha=0.5)
+ax1.set_title('C5000A')
+ax1.set_ylabel('Amp.')
+ax2.scatter(x=df['Minuts_From_Start'], y= df['CT001 Motor current (C5000B)'], color='red', label='y2',alpha=0.5)
+ax2.set_title('C5000B')
+ax2.set_xlabel('time (minutes)')
+ax3.scatter(x=df['Minuts_From_Start'], y= df['CT001 Motor current (C5000C)'], color='green', label='y3',alpha=0.5)
+ax3.set_title('C5000C')
+fig.tight_layout()
+#plt.savefig('../fig/C5000_Motor_Currents.jpg')
+plt.show()
+
+#//
+sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
 sns.displot(
-    data=normal_data,
-    x=normal_data.iloc[:,2],
-    hue=normal_data.iloc[:,5],
-    #hue_order=['Very Good','Good','Bad'],
+    data=df,
+    x=df['CT001 Motor current (C5000A)'],
+    hue=df['levels'],
+    hue_order=['Level1','Level2','Level3','Level4','Level5'],
     kind="kde", height=6,
     fill=True,
     alpha = 0.05,
 )
-#plt.show()
+#plt.savefig('../fig/Product-Current_C5000A.jpg')
+plt.show()
 
 #df.to_excel("../fig/output.xlsx",index=False)
-'''
