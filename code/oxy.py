@@ -2,8 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import datetime
-from sklearn.preprocessing import MinMaxScaler
-
 
 
 def date_time_add(x):
@@ -20,19 +18,19 @@ def set_oxygen_produce_levels(x):
     if x < 29500 :
         return None
     if x <= 29600 :
-        return "Level1"
+        return "L1 (29500-29600)Nm3/h"
     if x <= 29700 :
-        return "Level2"
+        return "L2 (29600-29700)Nm3/h"
     if x <= 29800 :
-        return "Level3"
+        return "L3 (29700-29800)Nm3/h"
     if x <= 29900 :
-        return "Level4"
+        return "L4 (29800-29900)Nm3/h"
     if x <= 30000 :
-        return "Level5"
+        return "L5 (29900-30000)Nm3/h"
     if x > 30000 :
         return None
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #//data base preparation
 df = pd.read_csv("../data/oxygen-plant.csv")
@@ -46,10 +44,11 @@ df.columns = df.columns.to_series().map(colums_dict['Des'])
 df["tarikh"] = df["Minuts_From_Start"].apply(date_time_add)
 #print(df.tail())
 
-
+#// Normaliz Data
 normal_data = normalization(df.drop("tarikh" ,axis= 1))
 #print(normal_data.head())
 
+#// add products levels
 df["levels"] = df["FI580 Vessel V5000B pressure"].apply(set_oxygen_produce_levels)
 #print(df.tail())
 
@@ -89,18 +88,48 @@ fig.tight_layout()
 #plt.savefig('../fig/C5000_Motor_Currents.jpg')
 plt.show()
 
-#//
+#// Product VS C5000 Compressor Motor Currents
 sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
 sns.displot(
     data=df,
     x=df['CT001 Motor current (C5000A)'],
     hue=df['levels'],
-    hue_order=['Level1','Level2','Level3','Level4','Level5'],
+    hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
     kind="kde", height=6,
     fill=True,
     alpha = 0.05,
 )
 #plt.savefig('../fig/Product-Current_C5000A.jpg')
 plt.show()
+
+#//Air turbine outlet pressure VS products
+sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
+sns.displot(
+    data=df,
+    x=df['PI210 Air turbine/booster outlet pressure'],
+    hue=df['levels'],
+    hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
+    kind="kde", height=6,
+    fill=True,
+    alpha = 0.05,
+)
+#plt.savefig('../fig/trubine pressure Vs Products.jpg')
+plt.show()
+
+#// Air turbine outlet Temprature VS pressure
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Air turbine outlet', fontsize=16,fontweight='bold')
+(ax1,ax2) = fig.subplots(1,2,sharex=True,sharey=True)
+ax1.scatter(x=df['PI210 Air turbine/booster outlet pressure'], y= df['TI210A Air turbine T2000A outlet temperature'], color='blue', label='y1',alpha=0.5)
+ax1.set_title('Turbine A')
+ax1.set_ylabel('Temp.')
+ax2.scatter(x=df['PI210 Air turbine/booster outlet pressure'], y= df['TI210B Air turbine T2000A outlet temperature'], color='red', label='y2',alpha=0.5)
+ax2.set_title('Turbine B')
+ax2.set_xlabel('Pressure (bar)')
+fig.tight_layout()
+#plt.savefig('../fig/trubine pressure Vs Temprature.jpg')
+plt.show()
+
+
 
 #df.to_excel("../fig/output.xlsx",index=False)
