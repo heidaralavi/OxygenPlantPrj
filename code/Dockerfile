@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 RUN apt-get update -y
-RUN apt-get install sudo curl wget gpg -y
+RUN apt-get install sudo curl wget gpg git -y
 #//For Python 3 and PIP
 RUN sudo apt-get install python3 -y 
 RUN sudo apt-get install python3-pip -y
