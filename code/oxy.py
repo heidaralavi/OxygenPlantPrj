@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import datetime
 import os
-#
-#
 
+working_dir = os.getcwd()
 def date_time_add(x):
     start_time = datetime.datetime(2024,9,6,18,42,48)
     delta_time = datetime.timedelta( minutes= x )
@@ -13,12 +12,12 @@ def date_time_add(x):
 
 def normalization(dataframe):
     normalized_df=(dataframe-dataframe.min())/(dataframe.max()-dataframe.min())
-    #normalized_df.to_excel("../fig/Normalized.xlsx",index=False)
+    #normalized_df.to_excel(f"{working_dir}/fig/Normalized.xlsx",index=False)
     return normalized_df
 
 def set_oxygen_produce_levels(x):
     if x < 29500 :
-        return "out off levels"
+        return "under levels"
     if x <= 29600 :
         return "L1 (29500-29600)Nm3/h"
     if x <= 29700 :
@@ -30,12 +29,12 @@ def set_oxygen_produce_levels(x):
     if x <= 30000 :
         return "L5 (29900-30000)Nm3/h"
     if x > 30000 :
-        return "out off levels"
+        return "over levels"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #//data base preparation
-working_dir = os.getcwd()
+
 df = pd.read_csv(f"{working_dir}/data/oxygen-plant.csv")
 
 #// change dataframe columns name 
@@ -49,7 +48,7 @@ df["tarikh"] = df["Minuts_From_Start"].apply(date_time_add)
 
 #// add C5000 total current
 df['C5000_total_current'] = df['CT001 Motor current (C5000A)']+df['CT001 Motor current (C5000B)']+df['CT001 Motor current (C5000C)']
-print(df.tail())
+#print(df.tail())
 
 
 #// Normaliz Data
@@ -145,4 +144,4 @@ df.groupby("levels").mean().plot.pie(y='C5000_total_current',autopct = '%0.0f%%'
 #plt.savefig(f'{working_dir}/fig/product_current_pie.jpg')
 plt.show()
 
-#df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
+df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
