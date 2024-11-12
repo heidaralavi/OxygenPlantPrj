@@ -148,10 +148,9 @@ fig.tight_layout()
 plt.show()
 
 
-#//pie chart
+#//pie chart for product-current
 plt.figure(figsize=(10,7),dpi=300)
-pie_df = df.drop(["time","tarikh"],axis=1)
-pie_df.groupby("levels").mean().plot.pie(y='C5000_total_current',autopct = '%0.0f%%', textprops={'fontsize': 18})
+df.groupby("levels")['C5000_total_current'].mean().plot.pie(autopct='%.2f', textprops={'fontsize': 18})
 #plt.savefig(f'{working_dir}/fig/product_current_pie.jpg')
 plt.show()
 
@@ -161,14 +160,13 @@ fig.suptitle('O2 Production', fontsize=16,fontweight='bold')
 ax1 = fig.subplots(1,1)
 sns.histplot(data=df["AI1 Product gaseous (liquid) oxygen purity"] ,ax= ax1)
 fig.tight_layout()
-plt.savefig(f'{working_dir}/fig/O2_Purity_Hist.jpg')
+#plt.savefig(f'{working_dir}/fig/O2_Purity_Hist.jpg')
 plt.show()
 
-#//pie chart of O2 Purity
+#//pie chart of O2 Purity conditions
 plt.figure(figsize=(10,7),dpi=300)
-pie_O2_Purity = df.drop(["time","tarikh"],axis=1)
-pie_O2_Purity.groupby("O2_Purity").mean().plot.pie(y='AI1 Product gaseous (liquid) oxygen purity',autopct = '%0.0f%%', textprops={'fontsize': 18})
-plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
+df['O2_Purity'].value_counts().plot.pie(autopct = '%.2f', textprops={'fontsize': 18})
+#plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
 plt.show()
 
 #df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
