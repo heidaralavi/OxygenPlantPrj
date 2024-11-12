@@ -144,4 +144,4 @@ df.groupby("levels").mean().plot.pie(y='C5000_total_current',autopct = '%0.0f%%'
 #plt.savefig(f'{working_dir}/fig/product_current_pie.jpg')
 plt.show()
 
-df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
+#df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
