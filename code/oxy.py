@@ -40,15 +40,15 @@ df = pd.read_csv(f"{working_dir}/data/Oxygen_Plant_24Days.csv")
 
 #// add tarikh column
 df["tarikh"] = df["time"].apply(date_time_add)
-print(df.info())
-'''
+#print(df.info())
+
 #// add C5000 total current
 df['C5000_total_current'] = df['CT001 Motor current (C5000A)']+df['CT001 Motor current (C5000B)']+df['CT001 Motor current (C5000C)']
 #print(df.tail())
 
 
 #// Normaliz Data
-normal_data = normalization(df.drop("tarikh" ,axis= 1))
+normal_data = normalization(df.drop(["time","tarikh"] ,axis= 1))
 #print(normal_data.head())
 
 #// add products levels
@@ -79,13 +79,13 @@ plt.show()
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('Compressors C5000 Motor Current', fontsize=16,fontweight='bold')
 (ax1,ax2,ax3) = fig.subplots(1,3,sharex=True,sharey=True)
-ax1.scatter(x=df['Minuts_From_Start'], y= df['CT001 Motor current (C5000A)'], color='blue', label='y1',alpha=0.5)
+ax1.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000A)'], color='blue', label='y1',alpha=0.5)
 ax1.set_title('C5000A')
 ax1.set_ylabel('Amp.')
-ax2.scatter(x=df['Minuts_From_Start'], y= df['CT001 Motor current (C5000B)'], color='red', label='y2',alpha=0.5)
+ax2.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000B)'], color='red', label='y2',alpha=0.5)
 ax2.set_title('C5000B')
 ax2.set_xlabel('time (minutes)')
-ax3.scatter(x=df['Minuts_From_Start'], y= df['CT001 Motor current (C5000C)'], color='green', label='y3',alpha=0.5)
+ax3.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000C)'], color='green', label='y3',alpha=0.5)
 ax3.set_title('C5000C')
 fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
@@ -136,8 +136,9 @@ plt.show()
 
 #//pie chart
 plt.figure(figsize=(10,7),dpi=300)
-df.groupby("levels").mean().plot.pie(y='C5000_total_current',autopct = '%0.0f%%', textprops={'fontsize': 18})
+pie_df = df.drop(["time","tarikh"],axis=1)
+pie_df.groupby("levels").mean().plot.pie(y='C5000_total_current',autopct = '%0.0f%%', textprops={'fontsize': 18})
 #plt.savefig(f'{working_dir}/fig/product_current_pie.jpg')
 plt.show()
-'''
+
 #df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
