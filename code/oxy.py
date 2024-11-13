@@ -114,19 +114,6 @@ ax4.tick_params(axis="x",labelrotation=45)
 ax4.set_xlabel('time', fontsize=16,fontweight='bold')
 ax4.set_ylabel('Amp.')
 fig.tight_layout()
-plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
-plt.show()
-
-#// Compressors C5000 Cumsuntion Motor Current
-fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Compressors C5000 Motor Current', fontsize=16,fontweight='bold')
-ax1 = fig.subplots(1,1,sharex=True,sharey=True)
-ax1.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000A)'], color='blue', label='y1',alpha=0.5)
-ax1.set_title('C5000A')
-ax1.set_ylabel('Amp.')
-ax1.tick_params(axis="x",labelrotation=45)
-ax3.tick_params(axis="x",labelrotation=45)
-fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
 plt.show()
 
@@ -158,6 +145,27 @@ sns.displot(
 )
 #plt.savefig(f'{working_dir}/fig/trubine pressure Vs Products.jpg')
 plt.show()
+
+#//C5000 Compressor VS O2 Purity
+sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
+sns.displot(
+    data=df,
+    x=df['C5000_total_current'],
+    hue=df['O2_Purity'],
+    #hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
+    kind="kde", height=6,
+    fill=True,
+    alpha = 0.05,
+)
+plt.axvline(290, c='green')
+plt.annotate('290 Amp.', xy =(289.5, 0.05),rotation = 90,ha='center', fontsize=6,alpha = 0.8)
+plt.axvline(292.5, c='green')
+plt.annotate('292.5 Amp.', xy =(292, 0.05),rotation = 90,ha='center', fontsize=6,alpha = 0.8)
+plt.savefig(f'{working_dir}/fig/C5000 Amp VS O2 purity.jpg')
+plt.show()
+
+
+
 
 #// Air turbine outlet Temprature VS pressure
 fig = plt.figure(figsize=(15,11),dpi=300)
@@ -192,7 +200,7 @@ plt.show()
 #//pie chart of O2 Purity conditions
 plt.figure(figsize=(10,7),dpi=300)
 df['O2_Purity'].value_counts().plot.pie(autopct = '%.2f', textprops={'fontsize': 18})
-#plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
+plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
 plt.show()
 
 #// Product VS C5000 Compressor Motor Currents
