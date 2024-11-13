@@ -108,6 +108,20 @@ fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
 plt.show()
 
+#// Compressors C5000 Cumsuntion Motor Current
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Compressors C5000 Motor Current', fontsize=16,fontweight='bold')
+ax1 = fig.subplots(1,1,sharex=True,sharey=True)
+ax1.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000A)'], color='blue', label='y1',alpha=0.5)
+ax1.set_title('C5000A')
+ax1.set_ylabel('Amp.')
+ax1.tick_params(axis="x",labelrotation=45)
+ax3.tick_params(axis="x",labelrotation=45)
+fig.tight_layout()
+#plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
+plt.show()
+
+
 #// Product VS C5000 Compressor Motor Currents
 sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
 sns.displot(
