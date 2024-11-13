@@ -75,7 +75,7 @@ corr = normal_data.corr()
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('Correlation Coefficient', fontsize=16,fontweight='bold')
 ax1 = fig.subplots(1,1)
-sns.heatmap(corr, cbar=False,square= True, fmt='.1f', annot=True, annot_kws={'size':3}, cmap='Greens',ax= ax1)
+sns.heatmap(corr, cbar=False,square= False, fmt='.1f', annot=True, annot_kws={'size':3}, cmap='Greens',ax= ax1)
 fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/Correlation_Coefficient.jpg')
 plt.show()
@@ -168,5 +168,26 @@ plt.figure(figsize=(10,7),dpi=300)
 df['O2_Purity'].value_counts().plot.pie(autopct = '%.2f', textprops={'fontsize': 18})
 #plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
 plt.show()
+
+#// Product VS C5000 Compressor Motor Currents
+sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
+sns.displot(
+    data=df,
+    x=df['SIC401B - PV Air turbine/booster T/C2000B speed'],
+    hue=df['O2_Purity'],
+    #hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
+    kind="kde", height=6,
+    fill=True,
+    alpha = 0.05,
+)
+plt.axvline(27793, c='green')
+plt.annotate('27793 RPM', xy =(27795, 0.0023),rotation = 90,ha='center', fontsize=6,alpha = 0.8) 
+#plt.axvline(210, c='red')
+#plt.annotate('224', xy =(224, 0.009),rotation = 90,ha='center', fontsize=16) 
+plt.savefig(f'{working_dir}/fig/tubine-speed-O2-purity.jpg')
+plt.show()
+
+
+
 
 #df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
