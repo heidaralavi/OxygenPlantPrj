@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 import seaborn as sns
 from datetime import datetime
 import os
@@ -92,20 +93,28 @@ plt.show()
 #// Compressors C5000 Motor Current
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('Compressors C5000 Motor Current', fontsize=16,fontweight='bold')
-(ax1,ax2,ax3) = fig.subplots(1,3,sharex=True,sharey=True)
+gs = GridSpec(2,3)
+ax1=fig.add_subplot(gs[0,0])
+ax2=fig.add_subplot(gs[0,1], sharey=ax1)
+ax3=fig.add_subplot(gs[0,2], sharey=ax1)
+ax4=fig.add_subplot(gs[1,:])
 ax1.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000A)'], color='blue', label='y1',alpha=0.5)
 ax1.set_title('C5000A')
 ax1.set_ylabel('Amp.')
 ax1.tick_params(axis="x",labelrotation=45)
 ax2.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000B)'], color='red', label='y2',alpha=0.5)
 ax2.set_title('C5000B')
-ax2.set_xlabel('time', fontsize=16,fontweight='bold')
 ax2.tick_params(axis="x",labelrotation=45)
 ax3.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000C)'], color='green', label='y3',alpha=0.5)
 ax3.set_title('C5000C')
 ax3.tick_params(axis="x",labelrotation=45)
+ax4.scatter(x=df['tarikh'], y= df['C5000_total_current'], color='green', label='y3',alpha=0.5)
+ax4.set_title('Consumption C5000')
+ax4.tick_params(axis="x",labelrotation=45)
+ax4.set_xlabel('time', fontsize=16,fontweight='bold')
+ax4.set_ylabel('Amp.')
 fig.tight_layout()
-#plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
+plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
 plt.show()
 
 #// Compressors C5000 Cumsuntion Motor Current
