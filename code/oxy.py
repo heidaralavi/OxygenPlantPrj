@@ -32,13 +32,13 @@ def set_oxygen_produce_levels(x):
 
 def set_oxygen_purity_levels(x):
     if x < 99.75 :
-        return "Not Good (< 99.75)%"
+        return "Purity < 99.75"
     if x <= 99.8 :
-        return "Good (99.75-99.80)%"
+        return "99.75 < Purity < 99.80"
     if x <= 99.85 :
-        return "Very Good (99.80-99.85)%"
+        return "99.80 < Purity < 99.85"
     if x > 99.85 :
-        return "Excellent (> 99.85)%"
+        return "Purity > 99.85"
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,4 +190,4 @@ plt.show()
 
 
 
-#df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
+df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
