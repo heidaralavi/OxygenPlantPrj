@@ -17,19 +17,19 @@ def normalization(dataframe):
 
 def set_oxygen_produce_levels(x):
     if x < 29500 :
-        return "under levels"
+        return "Product < 29500 Nm3/h"
     if x <= 29600 :
-        return "L1 (29500-29600)Nm3/h"
+        return "29500 < Product < 29600 Nm3/h"
     if x <= 29700 :
-        return "L2 (29600-29700)Nm3/h"
+        return "29600 < Product < 29700 Nm3/h"
     if x <= 29800 :
-        return "L3 (29700-29800)Nm3/h"
+        return "29700 < Product < 29800 Nm3/h"
     if x <= 29900 :
-        return "L4 (29800-29900)Nm3/h"
+        return "29800 < Product < 29900 Nm3/h"
     if x <= 30000 :
-        return "L5 (29900-30000)Nm3/h"
+        return "29900 < Product < 30000 Nm3/h"
     if x > 30000 :
-        return "over levels"
+        return "Product > 30000 Nm3/h"
 
 def set_oxygen_purity_levels(x):
     if x < 99.75 :
@@ -67,6 +67,8 @@ df["levels"] = df["FI580 Vessel V5000B pressure"].apply(set_oxygen_produce_level
 #// add O2 Purity levels
 df["O2_Purity"] = df["AI1 Product gaseous (liquid) oxygen purity"].apply(set_oxygen_purity_levels)
 #print(df.tail())
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #// calculating Correlation Coefficient
 corr = normal_data.corr()
@@ -136,20 +138,23 @@ fig.clear()
 
 #//Air turbine outlet pressure VS products
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Tubine Pressure VS Air Production', fontsize=18,fontweight='bold')
+fig.suptitle('Tubine Outlet Pressure VS Air Production', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
 ax1.set_xlabel('bar', fontsize=16,fontweight='bold')
 sns.kdeplot(
     data=df,
     x='PI210 Air turbine/booster outlet pressure',
     hue='levels',
-    hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
+    hue_order=['Product < 29500 Nm3/h','29500 < Product < 29600 Nm3/h',
+               '29600 < Product < 29700 Nm3/h','29700 < Product < 29800 Nm3/h',
+               '29800 < Product < 29900 Nm3/h','29900 < Product < 30000 Nm3/h',
+               'Product > 30000 Nm3/h'],
     fill=True,
     alpha = 0.05,
 )
 fig.tight_layout()
-plt.savefig(f'{working_dir}/fig/trubine pressure Vs Products.jpg')
-plt.show()
+#plt.savefig(f'{working_dir}/fig/trubine pressure Vs Products.jpg')
+#plt.show()
 fig.clear()
 
 #//C5000 Compressor VS O2 Purity
@@ -169,7 +174,7 @@ plt.annotate('290 Amp.', xy =(289.5, 0.05),rotation = 90,ha='center', fontsize=2
 plt.axvline(292.5, c='green')
 plt.annotate('292.5 Amp.', xy =(292, 0.05),rotation = 90,ha='center', fontsize=20,alpha = 0.8)
 fig.tight_layout()
-plt.savefig(f'{working_dir}/fig/C5000 Amp VS O2 purity.jpg')
+#plt.savefig(f'{working_dir}/fig/C5000 Amp VS O2 purity.jpg')
 #plt.show()
 fig.clear()
 
@@ -184,13 +189,13 @@ ax2.scatter(x=df['PI210 Air turbine/booster outlet pressure'], y= df['TI210B Air
 ax2.set_title('Turbine B', fontsize=16,fontweight='bold')
 ax2.set_xlabel('Pressure (bar)', fontsize=16,fontweight='bold')
 fig.tight_layout()
-plt.savefig(f'{working_dir}/fig/trubine pressure Vs Temprature.jpg')
+#plt.savefig(f'{working_dir}/fig/trubine pressure Vs Temprature.jpg')
 #plt.show()
 fig.clear()
 
 
 #//pie chart for product-current
-fig = plt.figure(figsize=(15,11),dpi=300)
+fig = plt.figure(figsize=(20,11),dpi=300)
 fig.suptitle('Amp. C5000 Comp. VS Air Production', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
 #print(df.groupby("levels")['C5000_total_current'].mean().index)
@@ -208,7 +213,7 @@ fig.clear()
 
 #// Histogram of O2 purity
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('O2 Production', fontsize=16,fontweight='bold')
+fig.suptitle('O2 Purity', fontsize=20,fontweight='bold')
 ax1 = fig.subplots(1,1)
 ax1.set_xlabel('AI1 Product gaseous (liquid) oxygen purity', fontsize=16,fontweight='bold')
 sns.histplot(data=df["AI1 Product gaseous (liquid) oxygen purity"] ,ax= ax1)
@@ -251,7 +256,49 @@ plt.annotate('27793 RPM', xy =(27787, 0.0023),rotation = 90,ha='center', fontsiz
 #plt.axvline(210, c='red')
 #plt.annotate('224', xy =(224, 0.009),rotation = 90,ha='center', fontsize=16) 
 fig.tight_layout()
-plt.savefig(f'{working_dir}/fig/tubine-speed-O2-purity.jpg')
+#plt.savefig(f'{working_dir}/fig/tubine-speed-O2-purity.jpg')
+#plt.show()
+fig.clear()
+
+
+#//pie chart for product levels
+fig = plt.figure(figsize=(20,11),dpi=300)
+fig.suptitle('Air Production Levels', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+#print(df.groupby("levels")['C5000_total_current'].mean().index)
+ax1.pie(
+    x=df.groupby("levels")['FI580 Vessel V5000B pressure'].sum(),
+    autopct = '%.2f%%',
+    textprops={'fontsize': 18},
+    labels=df.groupby("levels")['FI580 Vessel V5000B pressure'].sum().index,
+    )
+fig.tight_layout()
+#plt.savefig(f'{working_dir}/fig/product_levels_pie.jpg')
+#plt.show()
+fig.clear()
+
+#//C5000 Amp. VS Production
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Amp. C5000 Comp. VS Production', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('Amp.', fontsize=16,fontweight='bold')
+sns.kdeplot(
+    data=df,
+    x='C5000_total_current',
+    hue='levels',
+    hue_order=['Product < 29500 Nm3/h','29500 < Product < 29600 Nm3/h',
+               '29600 < Product < 29700 Nm3/h','29700 < Product < 29800 Nm3/h',
+               '29800 < Product < 29900 Nm3/h','29900 < Product < 30000 Nm3/h',
+               'Product > 30000 Nm3/h'],
+    fill=True,
+    alpha = 0.05,
+)
+plt.axvline(289.2, c='green')
+plt.annotate('289.2 Amp.', xy =(288.5, 0.035),rotation = 90,ha='center', fontsize=20,alpha = 0.8)
+plt.axvline(292.5, c='green')
+plt.annotate('292.5 Amp.', xy =(292, 0.035),rotation = 90,ha='center', fontsize=20,alpha = 0.8)
+fig.tight_layout()
+#plt.savefig(f'{working_dir}/fig/C5000 Amp VS O2 production.jpg')
 #plt.show()
 fig.clear()
 
