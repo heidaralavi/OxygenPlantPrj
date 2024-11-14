@@ -124,7 +124,7 @@ plt.axhline(df['C5000_total_current'].mean()-df['C5000_total_current'].std(), c=
 #plt.show()
 fig.clear()
 
-#// Product VS C5000 Compressor Motor Currents
+#// Product VS C5000A Compressor Motor Currents
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('C5000A Comp. VS Air Production', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
@@ -157,9 +157,9 @@ fig.tight_layout()
 #plt.show()
 fig.clear()
 
-#//C5000 Compressor VS O2 Purity
+#//C5000 Compressor Amp. VS O2 Purity
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Amp. C5000 Comp. VS O2 Purity', fontsize=18,fontweight='bold')
+fig.suptitle('C5000 Comp. Total Amp. VS O2 Purity', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
 ax1.set_xlabel('Amp.', fontsize=16,fontweight='bold')
 sns.kdeplot(
@@ -178,7 +178,7 @@ fig.tight_layout()
 #plt.show()
 fig.clear()
 
-#// Air turbine outlet Temprature VS pressure
+#// Air turbine outlet Temprature VS Outlet pressure
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('Air turbine outlet', fontsize=18,fontweight='bold')
 (ax1,ax2) = fig.subplots(1,2,sharex=True,sharey=True)
@@ -196,7 +196,7 @@ fig.clear()
 
 #//pie chart for product-current
 fig = plt.figure(figsize=(20,11),dpi=300)
-fig.suptitle('Amp. C5000 Comp. VS Air Production', fontsize=18,fontweight='bold')
+fig.suptitle('C5000 Comp. Total Amp. VS Air Production', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
 #print(df.groupby("levels")['C5000_total_current'].mean().index)
 ax1.pie(
@@ -222,6 +222,7 @@ fig.tight_layout()
 #plt.show()
 fig.clear()
 
+
 #//pie chart of O2 Purity conditions
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('O2 Purity', fontsize=30,fontweight='bold')
@@ -236,7 +237,6 @@ fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
 #plt.show()
 fig.clear()
-
 
 
 #// turbine Speed VS O2 Purity
@@ -279,7 +279,7 @@ fig.clear()
 
 #//C5000 Amp. VS Production
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Amp. C5000 Comp. VS Production', fontsize=18,fontweight='bold')
+fig.suptitle('C5000 Comp. Total Amp. VS Production', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
 ax1.set_xlabel('Amp.', fontsize=16,fontweight='bold')
 sns.kdeplot(
