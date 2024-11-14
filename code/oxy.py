@@ -45,10 +45,8 @@ def set_oxygen_purity_levels(x):
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #//data base preparation
-
 df = pd.read_csv(f"{working_dir}/data/Oxygen_Plant_24Days.csv")
 #print(df.info())
-
 
 #// add tarikh column
 df["tarikh"] = df["time"].apply(date_time_add)
@@ -57,7 +55,6 @@ df["tarikh"] = df["time"].apply(date_time_add)
 #// add C5000 total current
 df['C5000_total_current'] = df['CT001 Motor current (C5000A)']+df['CT001 Motor current (C5000B)']+df['CT001 Motor current (C5000C)']
 #print(df.tail())
-
 
 #// Normaliz Data
 normal_data = normalization(df.drop(["time","tarikh"] ,axis= 1))
@@ -79,16 +76,19 @@ ax1 = fig.subplots(1,1)
 sns.heatmap(corr, cbar=False,square= False, fmt='.1f', annot=True, annot_kws={'size':3}, cmap='Greens',ax= ax1)
 fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/Correlation_Coefficient.jpg')
-plt.show()
+#plt.show()
+fig.clear()
 
-#// Histogram of O2 production
+#// Histogram of Air production
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('O2 Production', fontsize=16,fontweight='bold')
+fig.suptitle('Air Production After Dust Filter', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
+ax1.set_xlabel('FI580   (Nm3/h)', fontsize=16,fontweight='bold')
 sns.histplot(data=df["FI580 Vessel V5000B pressure"], binwidth=100 ,ax= ax1)
 fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/Production_Hist.jpg')
-plt.show()
+#plt.show()
+fig.clear()
 
 #// Compressors C5000 Motor Current
 fig = plt.figure(figsize=(15,11),dpi=300)
@@ -98,130 +98,162 @@ ax1=fig.add_subplot(gs[0,0])
 ax2=fig.add_subplot(gs[0,1], sharey=ax1)
 ax3=fig.add_subplot(gs[0,2], sharey=ax1)
 ax4=fig.add_subplot(gs[1,:])
-ax1.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000A)'], color='blue', label='y1',alpha=0.5)
+ax1.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000A)'], color='blue',alpha=0.5)
 ax1.set_title('C5000A')
 ax1.set_ylabel('Amp.')
 ax1.tick_params(axis="x",labelrotation=45)
-ax2.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000B)'], color='red', label='y2',alpha=0.5)
+ax2.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000B)'], color='red',alpha=0.5)
 ax2.set_title('C5000B')
 ax2.tick_params(axis="x",labelrotation=45)
-ax3.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000C)'], color='green', label='y3',alpha=0.5)
+ax3.scatter(x=df['tarikh'], y= df['CT001 Motor current (C5000C)'], color='green',alpha=0.5)
 ax3.set_title('C5000C')
 ax3.tick_params(axis="x",labelrotation=45)
-ax4.scatter(x=df['tarikh'], y= df['C5000_total_current'], color='green', label='y3',alpha=0.5)
+ax4.scatter(x=df['tarikh'], y= df['C5000_total_current'], color='green',alpha=0.5)
 ax4.set_title('Consumption C5000')
 ax4.tick_params(axis="x",labelrotation=45)
 ax4.set_xlabel('time', fontsize=16,fontweight='bold')
 ax4.set_ylabel('Amp.')
 fig.tight_layout()
+plt.axhline(df['C5000_total_current'].mean(), c='red')
+plt.axhline(df['C5000_total_current'].mean()+df['C5000_total_current'].std(), c='red',linestyle='--')
+plt.axhline(df['C5000_total_current'].mean()-df['C5000_total_current'].std(), c='red',linestyle='--')
+#plt.annotate('27793 RPM', xy =(27795, 0.0023),rotation = 90,ha='center', fontsize=6,alpha = 0.8)
 #plt.savefig(f'{working_dir}/fig/C5000_Motor_Currents.jpg')
-plt.show()
-
+#plt.show()
+fig.clear()
 
 #// Product VS C5000 Compressor Motor Currents
-sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
-sns.displot(
-    data=df,
-    x=df['CT001 Motor current (C5000A)'],
-    hue=df['levels'],
-    hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
-    kind="kde", height=6,
-    fill=True,
-    alpha = 0.05,
-)
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('C5000A Comp. VS Air Production', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('Amp.', fontsize=16,fontweight='bold')
+ax1.set_ylabel('FI580   (Nm3/h)', fontsize=16,fontweight='bold')
+sns.kdeplot(data=df, x='CT001 Motor current (C5000A)', y='FI580 Vessel V5000B pressure',fill=True, levels=10)
+fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/Product-Current_C5000A.jpg')
-plt.show()
+#plt.show()
+fig.clear()
 
 #//Air turbine outlet pressure VS products
-sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
-sns.displot(
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Tubine Pressure VS Air Production', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('bar', fontsize=16,fontweight='bold')
+sns.kdeplot(
     data=df,
-    x=df['PI210 Air turbine/booster outlet pressure'],
-    hue=df['levels'],
+    x='PI210 Air turbine/booster outlet pressure',
+    hue='levels',
     hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
-    kind="kde", height=6,
     fill=True,
     alpha = 0.05,
 )
-#plt.savefig(f'{working_dir}/fig/trubine pressure Vs Products.jpg')
+fig.tight_layout()
+plt.savefig(f'{working_dir}/fig/trubine pressure Vs Products.jpg')
 plt.show()
+fig.clear()
 
 #//C5000 Compressor VS O2 Purity
-sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
-sns.displot(
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Amp. C5000 Comp. VS O2 Purity', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('Amp.', fontsize=16,fontweight='bold')
+sns.kdeplot(
     data=df,
-    x=df['C5000_total_current'],
-    hue=df['O2_Purity'],
-    #hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
-    kind="kde", height=6,
+    x='C5000_total_current',
+    hue='O2_Purity',
     fill=True,
     alpha = 0.05,
 )
 plt.axvline(290, c='green')
-plt.annotate('290 Amp.', xy =(289.5, 0.05),rotation = 90,ha='center', fontsize=6,alpha = 0.8)
+plt.annotate('290 Amp.', xy =(289.5, 0.05),rotation = 90,ha='center', fontsize=20,alpha = 0.8)
 plt.axvline(292.5, c='green')
-plt.annotate('292.5 Amp.', xy =(292, 0.05),rotation = 90,ha='center', fontsize=6,alpha = 0.8)
+plt.annotate('292.5 Amp.', xy =(292, 0.05),rotation = 90,ha='center', fontsize=20,alpha = 0.8)
+fig.tight_layout()
 plt.savefig(f'{working_dir}/fig/C5000 Amp VS O2 purity.jpg')
-plt.show()
-
-
-
+#plt.show()
+fig.clear()
 
 #// Air turbine outlet Temprature VS pressure
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Air turbine outlet', fontsize=16,fontweight='bold')
+fig.suptitle('Air turbine outlet', fontsize=18,fontweight='bold')
 (ax1,ax2) = fig.subplots(1,2,sharex=True,sharey=True)
 ax1.scatter(x=df['PI210 Air turbine/booster outlet pressure'], y= df['TI210A Air turbine T2000A outlet temperature'], color='blue', label='y1',alpha=0.5)
-ax1.set_title('Turbine A')
-ax1.set_ylabel('Temp.')
+ax1.set_title('Turbine A', fontsize=16,fontweight='bold')
+ax1.set_ylabel('Temp.', fontsize=16,fontweight='bold')
 ax2.scatter(x=df['PI210 Air turbine/booster outlet pressure'], y= df['TI210B Air turbine T2000A outlet temperature'], color='red', label='y2',alpha=0.5)
-ax2.set_title('Turbine B')
-ax2.set_xlabel('Pressure (bar)')
+ax2.set_title('Turbine B', fontsize=16,fontweight='bold')
+ax2.set_xlabel('Pressure (bar)', fontsize=16,fontweight='bold')
 fig.tight_layout()
-#plt.savefig(f'{working_dir}/fig/trubine pressure Vs Temprature.jpg')
-plt.show()
+plt.savefig(f'{working_dir}/fig/trubine pressure Vs Temprature.jpg')
+#plt.show()
+fig.clear()
 
 
 #//pie chart for product-current
-plt.figure(figsize=(10,7),dpi=300)
-df.groupby("levels")['C5000_total_current'].mean().plot.pie(autopct='%.2f', textprops={'fontsize': 18})
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Amp. C5000 Comp. VS Air Production', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+#print(df.groupby("levels")['C5000_total_current'].mean().index)
+ax1.pie(
+    x=df.groupby("levels")['C5000_total_current'].mean(),
+    autopct = '%.2f%%',
+    textprops={'fontsize': 18},
+    labels=df.groupby("levels")['C5000_total_current'].mean().index,
+    )
+fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/product_current_pie.jpg')
-plt.show()
+#plt.show()
+fig.clear()
+
 
 #// Histogram of O2 purity
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('O2 Production', fontsize=16,fontweight='bold')
 ax1 = fig.subplots(1,1)
+ax1.set_xlabel('AI1 Product gaseous (liquid) oxygen purity', fontsize=16,fontweight='bold')
 sns.histplot(data=df["AI1 Product gaseous (liquid) oxygen purity"] ,ax= ax1)
 fig.tight_layout()
 #plt.savefig(f'{working_dir}/fig/O2_Purity_Hist.jpg')
-plt.show()
+#plt.show()
+fig.clear()
 
 #//pie chart of O2 Purity conditions
-plt.figure(figsize=(10,7),dpi=300)
-df['O2_Purity'].value_counts().plot.pie(autopct = '%.2f', textprops={'fontsize': 18})
-plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
-plt.show()
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('O2 Purity', fontsize=30,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.pie(
+    x=df['O2_Purity'].value_counts(),
+    autopct = '%.2f%%',
+    textprops={'fontsize': 28},
+    labels=df['O2_Purity'].value_counts().index,
+    )
+fig.tight_layout()
+#plt.savefig(f'{working_dir}/fig/O2_purity_pie.jpg')
+#plt.show()
+fig.clear()
 
-#// Product VS C5000 Compressor Motor Currents
-sns.set(rc = {'figure.figsize':(15,11),'figure.dpi':300})
-sns.displot(
+
+
+#// turbine Speed VS O2 Purity
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Turbine Speed VS O2 Purity', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('RPM', fontsize=16,fontweight='bold')
+sns.kdeplot(
     data=df,
-    x=df['SIC401B - PV Air turbine/booster T/C2000B speed'],
-    hue=df['O2_Purity'],
-    #hue_order=['L1 (29500-29600)Nm3/h','L2 (29600-29700)Nm3/h','L3 (29700-29800)Nm3/h','L4 (29800-29900)Nm3/h','L5 (29900-30000)Nm3/h'],
-    kind="kde", height=6,
+    x='SIC401B - PV Air turbine/booster T/C2000B speed',
+    hue='O2_Purity',
     fill=True,
     alpha = 0.05,
 )
 plt.axvline(27793, c='green')
-plt.annotate('27793 RPM', xy =(27795, 0.0023),rotation = 90,ha='center', fontsize=6,alpha = 0.8) 
+plt.annotate('27793 RPM', xy =(27787, 0.0023),rotation = 90,ha='center', fontsize=18,alpha = 0.8) 
 #plt.axvline(210, c='red')
 #plt.annotate('224', xy =(224, 0.009),rotation = 90,ha='center', fontsize=16) 
-#plt.savefig(f'{working_dir}/fig/tubine-speed-O2-purity.jpg')
-plt.show()
-
-
-
+fig.tight_layout()
+plt.savefig(f'{working_dir}/fig/tubine-speed-O2-purity.jpg')
+#plt.show()
+fig.clear()
 
 #df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
+
