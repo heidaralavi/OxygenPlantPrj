@@ -304,3 +304,31 @@ fig.clear()
 
 #df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
 
+'''
+must_be_removed = ['time','tarikh','levels','O2_Purity',]
+items  = [item for item in list(df.columns) if item not in must_be_removed ]
+for item in items:
+    print(item + '\n')
+    #// turbine Speed VS O2 Purity
+    fig = plt.figure(figsize=(15,11),dpi=300)
+    fig.suptitle(item, fontsize=18,fontweight='bold')
+    ax1 = fig.subplots(1,1)
+    #ax1.set_xlabel('RPM', fontsize=16,fontweight='bold')
+    sns.kdeplot(
+        data=df,
+        x= item ,
+        hue='O2_Purity',
+        fill=True,
+        alpha = 0.05,
+    )
+    #plt.axvline(27793, c='green')
+    #plt.annotate('27793 RPM', xy =(27787, 0.0023),rotation = 90,ha='center', fontsize=18,alpha = 0.8) 
+    #plt.axvline(210, c='red')
+    #plt.annotate('224', xy =(224, 0.009),rotation = 90,ha='center', fontsize=16) 
+    fig.tight_layout()
+    item = item.replace('/',' ')
+    plt.savefig(f'{working_dir}/temp/{item}.jpg')
+    #plt.show()
+    fig.clear()
+    plt.close()
+'''
