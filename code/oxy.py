@@ -302,6 +302,50 @@ fig.tight_layout()
 #plt.show()
 fig.clear()
 
+
+#// FIC701 - PV Gaseous nitrogen flow to cooling tower flow VS O2 Purity
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('FIC701 Gaseous nitrogen flow to cooling tower VS O2 Purity', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('Nm3/h', fontsize=16,fontweight='bold')
+sns.kdeplot(
+    data=df,
+    x='FIC701 - PV Gaseous nitrogen flow to cooling tower flow',
+    hue='O2_Purity',
+    fill=True,
+    alpha = 0.05,
+)
+plt.axvline(6000, c='green')
+plt.annotate('6000 Nm3/h', xy =(5985, 0.0008),rotation = 90,ha='center', fontsize=18,alpha = 0.8) 
+plt.axvline(5300, c='red')
+plt.annotate('5300 Nm3/h', xy =(5285, 0.0008),rotation = 90,ha='center', fontsize=16) 
+fig.tight_layout()
+#plt.savefig(f'{working_dir}/fig/FIC701_Gaseous_nitrogen_flow_VS_O2_purity.jpg')
+#plt.show()
+fig.clear()
+
+#// TI580 Vessel V5000B pressure VS O2 Purity
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('TI580 Vessel V5000B Temprature', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('Temp.', fontsize=16,fontweight='bold')
+sns.kdeplot(
+    data=df,
+    x='TI580 Vessel V5000B pressure',
+    hue='O2_Purity',
+    fill=True,
+    alpha = 0.05,
+)
+plt.axvline(16, c='green')
+plt.annotate('16 C', xy =(15.8, 0.09),rotation = 90,ha='center', fontsize=18,alpha = 0.8) 
+plt.axvline(14, c='red')
+plt.annotate('14 C', xy =(13.8, 0.09),rotation = 90,ha='center', fontsize=16) 
+fig.tight_layout()
+#plt.savefig(f'{working_dir}/fig/TI580_VS_O2_purity.jpg')
+#plt.show()
+fig.clear()
+
+
 #df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
 
 '''
