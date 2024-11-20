@@ -36,7 +36,7 @@ scale = MinMaxScaler()
 normal_df = pd.DataFrame(data = scale.fit_transform(df) , columns= df.columns)
 print(normal_df.shape)
 
-pca = PCA(n_components=2)
+pca = PCA(n_components=2,random_state=0)
 pca_output = pca.fit_transform(normal_df)
 print(pca.explained_variance_ratio_)
 
@@ -45,11 +45,12 @@ km.fit(pca_output)
 clust_lable_dict = {0:'Good',1:'out',2:'Bad',3:'Very Good',4:'out',5:'l6',6:'l7',7:'l8'}
 labels = [clust_lable_dict[i] for i in km.labels_]
 
-#//Vitualize PCA 
+#//Vitualize PCA-Kmeans Clustering
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('PCA Vitualizing', fontsize=18,fontweight='bold')
+fig.suptitle('PCA Kmeans Clustering Vitualizations', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
 ax1.set_xlabel('PCA1', fontsize=16,fontweight='bold')
+ax1.set_ylabel('PCA2', fontsize=16,fontweight='bold')
 sns.scatterplot(
     #data=df,
     x=pca_output[:,0],
@@ -59,17 +60,19 @@ sns.scatterplot(
     alpha = 0.9,
 )
 fig.tight_layout()
-plt.savefig(f'{working_dir}/temp/temp.jpg')
+plt.savefig(f'{working_dir}/kmeans-output/pca_kmeans.jpg')
 #plt.show()
 fig.clear()
 
+# add C5000 Total Current and Remove Outlaier
 df['kmeans_labels'] = labels
+df['C5000_total_current'] = df['CT001 Motor current (C5000A)']+df['CT001 Motor current (C5000B)']+df['CT001 Motor current (C5000C)']
 df = df[df['kmeans_labels'] != 'out']
 print(df.shape)
 
-#// Histogram of Air production
+#// Histogram of O2 Purity By Kmeans Clusters
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Air Production After Dust Filter', fontsize=18,fontweight='bold')
+fig.suptitle('O2 Purity Groupby Kmeans', fontsize=18,fontweight='bold')
 ax1,ax2,ax3 = fig.subplots(1,3,sharey=True)
 ax1.set_xlabel('O2 Purity (%)', fontsize=16,fontweight='bold')
 ax2.set_xlabel('O2 Purity (%)', fontsize=16,fontweight='bold')
@@ -108,51 +111,71 @@ ax2.annotate('99.81', xy =(99.81, 75),rotation = 90,ha='center', fontsize=18,alp
 ax3.axvline(99.795, c='red')
 ax3.annotate('99.79', xy =(99.79, 75),rotation = 90,ha='center', fontsize=18,alpha = 0.8)
 fig.tight_layout()
-plt.savefig(f'{working_dir}/temp/temp.jpg')
+plt.savefig(f'{working_dir}/kmeans-output/histogram-O2-purity-groupby-kmeans.jpg')
 #plt.show()
 fig.clear()
 
-
-
-
-#//Air turbine outlet pressure VS products
+#// Histogram of Nitrogen Purity By Kmeans Clusters
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Tubine Outlet Pressure VS Air Production', fontsize=18,fontweight='bold')
-ax1 = fig.subplots(1,1)
-ax1.set_xlabel('bar', fontsize=16,fontweight='bold')
-sns.scatterplot(
-    data=df,
-    x=df.index,
-    #y='AI4 Oxygen content in waste nitrogen',
-    y='AI1 Product gaseous (liquid) oxygen purity',
-    hue='kmeans_labels',
-    alpha = 0.9,
-)
+fig.suptitle('nitrogen Purity Groupby Kmeans', fontsize=18,fontweight='bold')
+ax1,ax2,ax3 = fig.subplots(1,3,sharey=True)
+ax1.set_xlabel('N2 Purity (%)', fontsize=16,fontweight='bold')
+ax2.set_xlabel('N2 Purity (%)', fontsize=16,fontweight='bold')
+ax3.set_xlabel('N2 Purity (%)', fontsize=16,fontweight='bold')
+sns.histplot(
+                data=df,
+                x= 'AI4 Oxygen content in waste nitrogen',
+                hue= 'kmeans_labels',
+                hue_order= ['Very Good'],
+                alpha = 0.5,
+                kde= True,
+                ax= ax1
+            )
+sns.histplot(
+                data=df,
+                x= 'AI4 Oxygen content in waste nitrogen',
+                hue= 'kmeans_labels',
+                hue_order= ['Good'],
+                alpha = 0.5,
+                kde= True,
+                ax= ax2
+            )
+sns.histplot(
+                data=df,
+                x= 'AI4 Oxygen content in waste nitrogen',
+                hue= 'kmeans_labels',
+                hue_order= ['Bad'],
+                alpha = 0.5,
+                kde= True,
+                ax= ax3
+            )
+ax1.axvline(90.3, c='red')
+ax1.annotate('90.3', xy =(90.2, 75),rotation = 90,ha='center', fontsize=18,alpha = 0.8)
+ax2.axvline(90, c='red')
+ax2.annotate('90', xy =(89.9, 75),rotation = 90,ha='center', fontsize=18,alpha = 0.8)
+ax3.axvline(90.15, c='red')
+ax3.annotate('90.15', xy =(90.1, 75),rotation = 90,ha='center', fontsize=18,alpha = 0.8)
 fig.tight_layout()
-
-#plt.savefig(f'{working_dir}/temp/temp.jpg')
+plt.savefig(f'{working_dir}/kmeans-output/histogram-N2-purity-groupby-kmeans.jpg')
 #plt.show()
 fig.clear()
 
-'''
-
-#// turbine Speed VS O2 Purity
+#// C5000 total Amp VS O2 Purity
 fig = plt.figure(figsize=(15,11),dpi=300)
-fig.suptitle('Turbine Speed VS O2 Purity', fontsize=18,fontweight='bold')
+fig.suptitle('C5000 Amp. VS O2 Purity', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
-ax1.set_xlabel('RPM', fontsize=16,fontweight='bold')
+ax1.set_xlabel('Amp.', fontsize=16,fontweight='bold')
 sns.kdeplot(
     data=df,
-    x='AI1 Product gaseous (liquid) oxygen purity',
+    x='C5000_total_current',
     hue='kmeans_labels',
     fill=True,
     alpha = 0.05,
 )
 fig.tight_layout()
-#plt.savefig(f'{working_dir}/temp/temp.jpg')
+plt.savefig(f'{working_dir}/kmeans-output/C5000-Amp-VS-O2-Purity.jpg')
 #plt.show()
 fig.clear()
-
 
 #// turbine Speed VS O2 Purity
 fig = plt.figure(figsize=(15,11),dpi=300)
@@ -168,11 +191,26 @@ sns.kdeplot(
 )
 plt.axvline(27793, c='green')
 plt.annotate('27793 RPM', xy =(27787, 0.0023),rotation = 90,ha='center', fontsize=18,alpha = 0.8) 
-#plt.axvline(210, c='red')
-#plt.annotate('224', xy =(224, 0.009),rotation = 90,ha='center', fontsize=16) 
 fig.tight_layout()
-plt.savefig(f'{working_dir}/temp/temp.jpg')
+plt.savefig(f'{working_dir}/kmeans-output/tubine-speed-O2-purity.jpg')
 #plt.show()
 fig.clear()
 
-'''
+#//Turbine Speed VS O2 purity groupby kmeans
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Trbine Speed Kmeans Clustering Vitualizations', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('O2 Purity', fontsize=16,fontweight='bold')
+ax1.set_ylabel('RPM', fontsize=16,fontweight='bold')
+sns.scatterplot(
+    data=df,
+    y='SIC401B - PV Air turbine/booster T/C2000B speed',
+    x='AI4 Oxygen content in waste nitrogen',
+    hue='kmeans_labels',
+    alpha = 0.9,
+)
+fig.tight_layout()
+plt.axhline(27793, c='green',alpha=0.4)
+plt.savefig(f'{working_dir}/kmeans-output/turbine-speed-vs-o2-purity.jpg')
+#plt.show()
+fig.clear()
