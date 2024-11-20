@@ -1,0 +1,12 @@
+﻿high_corr_features
+PT002  System pressure (C5000B)
+PT002  System pressure (C5000C)
+PI61C Oxygen compressor C6100B oil pressure
+TI70C Oxygen compressor C6100B oil cooler outlet temperature
+TE006 Oil supply temperature (C5000B)
+TE004 C/W inlet temperature (C5000B)
+TE006 Oil supply temperature (C5000C)
+TE004 C/W inlet temperature (C5000C)
+PT003 C/W inlet pressure (C5000B)
+PT003 C/W inlet pressure (C5000C)
+PT003 C/W inlet pressure (C7300)
