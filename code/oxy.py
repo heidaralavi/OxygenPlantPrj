@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import seaborn as sns
@@ -71,13 +72,19 @@ df["O2_Purity"] = df["AI1 Product gaseous (liquid) oxygen purity"].apply(set_oxy
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #// calculating Correlation Coefficient
-corr = normal_data.corr()
+corr = normal_data.corr().abs()
+corr = corr.where(np.triu(np.ones(corr.shape),k= 1).astype(bool))
+#column_name_to_drop = [column for column in corr.columns if any(corr[column] > 0.95)]
+#print(column_name_to_drop)
+high_corr_columns_name = pd.DataFrame(corr.ge(.95).stack().loc[lambda corr: corr].index.to_list())
+#print(high_corr_columns_name)
+#high_corr_columns_name.to_excel(f"{working_dir}/temp/high_corr_features.xlsx",index=False)
 fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('Correlation Coefficient', fontsize=16,fontweight='bold')
 ax1 = fig.subplots(1,1)
 sns.heatmap(corr, cbar=False,square= False, fmt='.1f', annot=True, annot_kws={'size':3}, cmap='Greens',ax= ax1)
 fig.tight_layout()
-#plt.savefig(f'{working_dir}/fig/Correlation_Coefficient.jpg')
+#plt.savefig(f'{working_dir}/temp/Correlation_Coefficient.jpg')
 #plt.show()
 fig.clear()
 
