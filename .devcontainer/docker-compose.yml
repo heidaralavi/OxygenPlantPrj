@@ -12,4 +12,6 @@ services:
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/app
+    ports:
+      - 8888:8888
     command: sleep infinity

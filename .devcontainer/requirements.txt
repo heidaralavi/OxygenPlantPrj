@@ -19,3 +19,5 @@ seaborn==0.13.2
 six==1.16.0
 threadpoolctl==3.5.0
 tzdata==2024.2
+ipykernel
+jupyter

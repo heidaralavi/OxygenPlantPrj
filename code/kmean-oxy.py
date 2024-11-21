@@ -182,12 +182,23 @@ fig = plt.figure(figsize=(15,11),dpi=300)
 fig.suptitle('Turbine Speed VS O2 Purity', fontsize=18,fontweight='bold')
 ax1 = fig.subplots(1,1)
 ax1.set_xlabel('RPM', fontsize=16,fontweight='bold')
+ax2 = ax1.twinx()
+sns.histplot(
+    data=df,
+    x= 'SIC401B - PV Air turbine/booster T/C2000B speed',
+    #hue= 'kmeans_labels',
+    #hue_order= ['Very Good'],
+    alpha = 0.05,
+    #kde= True,
+    ax= ax1
+)
 sns.kdeplot(
     data=df,
     x='SIC401B - PV Air turbine/booster T/C2000B speed',
     hue='kmeans_labels',
     fill=True,
-    alpha = 0.05,
+    alpha = 0.4,
+    ax=ax2
 )
 plt.axvline(27793, c='green')
 plt.annotate('27793 RPM', xy =(27787, 0.0023),rotation = 90,ha='center', fontsize=18,alpha = 0.8) 
@@ -212,5 +223,35 @@ sns.scatterplot(
 fig.tight_layout()
 plt.axhline(27793, c='green',alpha=0.4)
 plt.savefig(f'{working_dir}/kmeans-output/turbine-speed-vs-o2-purity.jpg')
+#plt.show()
+fig.clear()
+
+#// turbine Speed VS O2 Purity
+fig = plt.figure(figsize=(15,11),dpi=300)
+fig.suptitle('Turbine Speed VS O2 Purity', fontsize=18,fontweight='bold')
+ax1 = fig.subplots(1,1)
+ax1.set_xlabel('RPM', fontsize=16,fontweight='bold')
+ax2 = ax1.twinx()
+sns.histplot(
+    data=df,
+    x= 'AI4 Oxygen content in waste nitrogen',
+    #hue= 'kmeans_labels',
+    #hue_order= ['Very Good'],
+    alpha = 0.9,
+    #kde= True,
+    ax= ax1
+)
+sns.kdeplot(
+    data=df,
+    x='AI4 Oxygen content in waste nitrogen',
+    hue='kmeans_labels',
+    fill=False,
+    alpha = 0.8,
+    ax=ax2
+)
+#plt.axvline(27793, c='green')
+#plt.annotate('27793 RPM', xy =(27787, 0.0023),rotation = 90,ha='center', fontsize=18,alpha = 0.8) 
+fig.tight_layout()
+plt.savefig(f'{working_dir}/kmeans-output/N2-O2-purity.jpg')
 #plt.show()
 fig.clear()
