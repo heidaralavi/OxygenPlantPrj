@@ -21,3 +21,4 @@ threadpoolctl==3.5.0
 tzdata==2024.2
 ipykernel
 jupyter
+yellowbrick

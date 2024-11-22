@@ -17,6 +17,7 @@
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
 	"workspaceFolder": "/app",
 	"forwardPorts": [8888],
+
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -24,8 +25,15 @@
 				"ms-python.python",
 				"ms-toolsai.jupyter",
 				"ms-vscode-remote.remote-containers"
-			]
-		}
+				]
+			},
+		"settings": {
+			"editor.fontFamily": [
+				"Courier New",
+				"monospace",
+				"sans-serif"
+				]
+			}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
