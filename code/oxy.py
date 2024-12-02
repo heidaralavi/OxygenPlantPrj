@@ -355,6 +355,17 @@ fig.clear()
 
 #df.to_excel(f"{working_dir}/fig/output.xlsx",index=False)
 
+mask = pd.DataFrame()
+mask['cond1'] = df['O2_Purity'] == "Purity > 99.85"
+mask['cond3'] = df['SIC401B - PV Air turbine/booster T/C2000B speed'].between(27750,27800)
+mask['cond4'] = df['TI580 Vessel V5000B pressure'].between(15.5,16.5)
+mask['cond5'] = df['FIC701 - PV Gaseous nitrogen flow to cooling tower flow'].between(5900,6100)
+mask['results'] = mask['cond1']*mask['cond3']*mask['cond4']*mask['cond5']
+
+golden_day_df = df[mask['results']]
+#golden_day_df.to_excel(f"{working_dir}/temp/golden_days.xlsx",index=False)
+
+
 '''
 must_be_removed = ['time','tarikh','levels','O2_Purity',]
 items  = [item for item in list(df.columns) if item not in must_be_removed ]
